@@ -14,8 +14,7 @@ export class CreateUserHandler {
     userPayload: CreateUser,
   ): Promise<User> {
     try {
-     const user = await this.userRepository.createUser(userPayload);
-     return user
+      return await this.userRepository.createUser(userPayload);
     } catch (error) {
       throw error;
     }

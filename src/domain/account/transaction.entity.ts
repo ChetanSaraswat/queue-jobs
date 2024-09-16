@@ -1,7 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Generated, CreateDateColumn, JoinColumn, UpdateDateColumn } from 'typeorm';
 import { User } from '../user/user.entity';
 import { TransactionType } from './enum/transaction-type.enum';
-
 @Entity('transaction')
 export class Transaction {
   @PrimaryGeneratedColumn()

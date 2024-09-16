@@ -14,8 +14,7 @@ export class CreateBankAccountHandler {
     bankPayload: CreateAccount
   ): Promise<Account> {
     try {
-     const bankAccount = await this.bankAccountRepository.createBankAccount(bankPayload);
-     return bankAccount
+     return await this.bankAccountRepository.createBankAccount(bankPayload);
     } catch (error) {
       throw error;
     }

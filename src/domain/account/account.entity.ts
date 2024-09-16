@@ -1,8 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Generated, OneToOne, CreateDateColumn, JoinColumn, PrimaryColumn, UpdateDateColumn } from 'typeorm';;
-
+import { Entity, Column, PrimaryGeneratedColumn, Generated, OneToOne, CreateDateColumn, JoinColumn, UpdateDateColumn } from 'typeorm';;
 import { User } from '../user/user.entity';
 import { Min } from 'class-validator';
-
 @Entity('account')
 export class Account {
 
