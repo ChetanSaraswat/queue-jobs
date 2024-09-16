@@ -1,20 +1,27 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { BankAccountRepository } from "src/infrastructure/repositories/account/bank.repository";
-import { CreateAccount } from "./create-account.interface";
+
+import { CreateAccount, CreateAccountPayload } from "./create-account.interface";
 import { Account } from "src/domain/account/account.entity";
+import { AccountRepository } from "src/infrastructure/repositories/account/account.repository";
+import { Balance } from "src/domain/account/account-balance";
 @Injectable()
-export class CreateBankAccountHandler {
+export class CreateAccountHandler {
   constructor(
-    @InjectRepository(BankAccountRepository)
-    private bankAccountRepository: BankAccountRepository,
+    @InjectRepository(AccountRepository)
+    private AccountRepository: AccountRepository,
   ) {}
 
   public async handle(
-    bankPayload: CreateAccount
+    accountPayload: CreateAccountPayload
   ): Promise<Account> {
     try {
-     return await this.bankAccountRepository.createBankAccount(bankPayload);
+      const validBalance:Balance = new Balance(accountPayload?.balance);
+      const validAccountPayload:CreateAccount= {
+        ...accountPayload,
+        balance:validBalance
+      }
+      return await this.AccountRepository.createAccount(validAccountPayload);
     } catch (error) {
       throw error;
     }

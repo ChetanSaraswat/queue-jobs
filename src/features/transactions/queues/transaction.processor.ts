@@ -2,61 +2,63 @@ import { Processor, Process, OnQueueCompleted, OnQueueFailed } from '@nestjs/bul
 import { Job } from 'bull';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BankAccountRepository } from 'src/infrastructure/repositories/account/bank.repository';
-import { TransactionLogRepository } from 'src/infrastructure/repositories/transaction/transaction.repository';
+import { TransactionRepository } from 'src/infrastructure/repositories/transaction/transaction.repository';
 import { dataSource } from 'ormconfig';
 import { TransactionType } from 'src/domain/account/enum/transaction-type.enum';
 import { InsufficientBalanceException } from 'src/infrastructure/exception/custom-exception';
+import { AccountRepository } from 'src/infrastructure/repositories/account/account.repository';
+import { CreateTransaction } from '../create-transaction/create-transaction.interface';
+import { Balance } from 'src/domain/account/account-balance';
 @Processor('transaction-queue')
 @Injectable()
 export class TransactionProcessor {
     constructor(
-        @InjectRepository(BankAccountRepository )
-        private bankAccountRepository: BankAccountRepository,
-        @InjectRepository(TransactionLogRepository)
-        private transactionLogRepository:TransactionLogRepository
+        @InjectRepository(AccountRepository )
+        private AccountRepository: AccountRepository,
+        @InjectRepository(TransactionRepository)
+        private transactionRepository:TransactionRepository
       ) {}
     
-  @Process('transaction-log-job')
+  @Process('transaction-job')
   async handleTaskJob(job: Job) {
-        const data = job.data?.transactionPayload;
-        const debit_user_id = job.data?.user_id;
-        const credit_user_id=data?.receiver_id;
-        const debit_bank_details = await this.bankAccountRepository.findByUuid(debit_user_id);
-        const credit_bank_details = await this.bankAccountRepository.findByUuid(credit_user_id);
-        if(debit_bank_details?.balance > data?.amount){
+        const { transactionPayload: data, user_id: debit_user_id } = job.data || {};
+        const { receiver_id: credit_user_id } = data || {};
+        const debit_bank_details = await this.AccountRepository.findByUuid(debit_user_id);
+        const balanceValue = debit_bank_details.balance.getValue()
+        const credit_bank_details = await this.AccountRepository.findByUuid(credit_user_id);
+        if(balanceValue > data?.amount){
             const debitPayload= {
-                balance : Number(debit_bank_details?.balance)-Number(data?.amount),
+                balance : Balance.subtract(debit_bank_details?.balance,Number(data?.amount)),
                 user_id : debit_user_id
             }
             const creditPayload= {
-                balance : Number(credit_bank_details?.balance) + Number(data?.amount),
+                balance : Balance.add(credit_bank_details?.balance,Number(data?.amount)), 
                 user_id : credit_user_id
             }
             return await dataSource.transaction(async transaction => {
-            await this.bankAccountRepository.updateBankBalance(debitPayload,transaction)
-            await this.bankAccountRepository.updateBankBalance(creditPayload,transaction)
-            const debitTransactionlogData={
+            await this.AccountRepository.updateAccountBalance(debitPayload,transaction)
+            await this.AccountRepository.updateAccountBalance(creditPayload,transaction)
+            const debitTransactionData:CreateTransaction={
                 transaction_type : TransactionType.DEBIT,
                 amount : data?.amount,
                 credited_user_id : credit_user_id,
                 debited_user_id : debit_user_id,
-                balance_after_transaction:debitPayload?.balance,
+                balance_after_transaction:debitPayload?.balance.getValue(),
                 credited_bank_account:credit_bank_details?.account_number,
                 debited_bank_account:debit_bank_details?.account_number, 
             }
-            await this.transactionLogRepository.createTransactionLog(debitTransactionlogData,transaction)
+            await this.transactionRepository.createTransaction(debitTransactionData,transaction)
             
-            const creditTransactionlogData={
+            const creditTransactionData:CreateTransaction={
                 transaction_type : TransactionType.CREDIT,
                 amount : data?.amount,
                 credited_user_id : credit_user_id,
                 debited_user_id : debit_user_id,
-                balance_after_transaction:creditPayload?.balance,
+                balance_after_transaction:creditPayload?.balance.getValue(),
                 credited_bank_account:credit_bank_details?.account_number,
                 debited_bank_account:debit_bank_details?.account_number,
             }
-            return  await this.transactionLogRepository.createTransactionLog(creditTransactionlogData,transaction)
+            return await this.transactionRepository.createTransaction(creditTransactionData,transaction)
         })}
          else{
             throw new InsufficientBalanceException();

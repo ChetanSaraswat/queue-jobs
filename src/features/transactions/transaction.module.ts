@@ -3,8 +3,8 @@ import { BullModule } from '@nestjs/bull';
 import { CreateTransactionHandler } from './create-transaction/create-transaction.service';
 import { TransactionProcessor } from './queues/transaction.processor';
 import { CreateTransactionController } from './create-transaction/create-transaction.controller';
-import { BankAccountRepository } from 'src/infrastructure/repositories/account/bank.repository';
-import { TransactionLogRepository } from 'src/infrastructure/repositories/transaction/transaction.repository';
+import { TransactionRepository } from 'src/infrastructure/repositories/transaction/transaction.repository';
+import { AccountRepository } from 'src/infrastructure/repositories/account/account.repository';
 @Module({
     controllers:[CreateTransactionController],
   imports: [
@@ -15,8 +15,8 @@ import { TransactionLogRepository } from 'src/infrastructure/repositories/transa
   providers: [
     CreateTransactionHandler,
     TransactionProcessor,
-    BankAccountRepository,
-    TransactionLogRepository],
+    AccountRepository,
+    TransactionRepository],
   exports: [],
 })
 export class TransactionModule {}

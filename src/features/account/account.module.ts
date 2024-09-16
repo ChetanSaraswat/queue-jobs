@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
-import { CreateBankAccountController } from './create-account/create-account.controller';
-import { CreateBankAccountHandler } from './create-account/create-account.service';
-import { BankAccountRepository } from 'src/infrastructure/repositories/account/bank.repository';
+import { CreateAccountController } from './create-account/create-account.controller';
+import { CreateAccountHandler } from './create-account/create-account.service';
+import { AccountRepository } from 'src/infrastructure/repositories/account/account.repository';
+
 @Module({
-  controllers:[ CreateBankAccountController],
+  controllers:[ CreateAccountController],
   imports: [],
   providers: [
-    CreateBankAccountHandler,
-    BankAccountRepository],
+    CreateAccountHandler,
+    AccountRepository],
   exports: [],
 })
 export class AccountModule {}

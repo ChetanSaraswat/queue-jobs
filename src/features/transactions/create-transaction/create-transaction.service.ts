@@ -13,8 +13,9 @@ export class CreateTransactionHandler {
     user_id:string
   ) {
     try {
-       return await this.transactionQueue.add('transaction-log-job', {transactionPayload,user_id});
+       return await this.transactionQueue.add('transaction-job', {transactionPayload,user_id});
     } catch (error) {
+      console.log('error: ', error);
        throw error;
     }
   }

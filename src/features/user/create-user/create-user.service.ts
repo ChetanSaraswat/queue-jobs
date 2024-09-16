@@ -9,7 +9,6 @@ export class CreateUserHandler {
     @InjectRepository(UserRepository)
     private userRepository: UserRepository,
   ) {}
-
   public async handle(
     userPayload: CreateUser,
   ): Promise<User> {
