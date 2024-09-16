@@ -1,6 +1,5 @@
-import { TransactionType } from "src/domain/bank/enum/transaction-type.enum";
+import { TransactionType } from "src/domain/account/enum/transaction-type.enum";
 import { User } from "src/domain/user/user.entity";
-
 export interface CreateTransaction {
     transaction_type : TransactionType
     amount : number,

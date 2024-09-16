@@ -1,5 +1,4 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
-
 export class CreateMigration1726469267832 implements MigrationInterface {
     name = 'CreateMigration1726469267832'
 

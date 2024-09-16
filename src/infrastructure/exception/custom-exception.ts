@@ -1,5 +1,13 @@
-import { HttpStatus } from "@nestjs/common";
 import { Response } from "express";
+import { HttpException, HttpStatus } from '@nestjs/common';
+export class InsufficientBalanceException extends HttpException {
+  constructor(
+    message: string = 'Insufficient balance',
+    status: HttpStatus = HttpStatus.BAD_REQUEST
+  ) {
+    super(message, status);
+  }
+}
 
 export function handleError(res: Response, error) {
     return res

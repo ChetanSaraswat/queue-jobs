@@ -1,73 +1,121 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# job-queues-example
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This is a microservice that is used to get applicant information for a scholarship application.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+- [Technicals Requirements](#technicals-requirements)
+- [Entity relationship diagram](#entity-relationship-diagram)
+- [Event Modeling](#event-modeling)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Database Setup](#database-setup)
+- [Database Configuration](#database-configuration)
+- [Mail Configuration](#mail-configuration)
+- [Storage Configuration](#storage-configuration)
+- [Entity Relationship Diagram](#entity-relationship-diagram)
+- [Services Architecture](#services-architecture)
+- [Event Modeling](#event-modeling)
 
-## Description
+# Technicals Requirements
+- DB must be relational.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+# Recommendations
+- Use HAL and HATEOAS 
+
+
+## Getting Started
+These instructions will help you set up and run the Queue Job Demo Project on your local machine or server.
+
+### Prerequisites
+- Node.js and npm installed
+- A database system (PostgreSQL)
+- Nest Cli (@nestjs/cli) installed
 
 ## Installation
+To install this project, follow these steps:
 
-```bash
-$ npm install
-```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/ChetanSaraswat/queue-jobs
+   ```
 
-## Running the app
+2. Navigate into the project directory:
+   ```bash
+   cd job-queue-example
+   ```
 
-```bash
-# development
-$ npm run start
+3. Create a `.env` file in the root of the project by copying the example file and update it with your configuration settings:
+   ```sh
+   cp .env.example .env
+   ```
 
-# watch mode
-$ npm run start:dev
+4. Build the Docker image and run Docker services with Docker Compose:
+   ```sh
+   docker compose up
+   ```
 
-# production mode
-$ npm run start:prod
-```
+5. Enter the backend container:
+      ```sh
+      docker compose exec backend sh
+      ```
 
-## Test
+6. Install dependencies:
+   ```sh
+   npm ci
+   ```
+  
+### Database Setup
 
-```bash
-# unit tests
-$ npm run test
+Below are the steps to set up the database along with the corresponding commands:
 
-# e2e tests
-$ npm run test:e2e
+1. Create the Database (if not already created by Docker Compose):
+   ```bash
+   npm run db:create
+   ```
 
-# test coverage
-$ npm run test:cov
-```
+2. Drop and Recreate Database (if needed):
+   ```bash
+   npm run db:drop
+   ```
 
-## Support
+3. Run Migrations:
+   ```bash
+   npm run migration:run
+   ```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+4. Rollback Migrations (if needed):
+     ```bash
+     npm run migration:revert
+     ```
 
-## Stay in touch
+5. Seed the Database:
+   ```bash
+   npm run seed:run
+   ```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Running the Project
 
-## License
+1. Start the HTTP API server in development mode:
+   ```bash
+   npm run start:dev
+   ```
 
-Nest is [MIT licensed](LICENSE).
+## Database Configuration
+### PostgreSQL
+The service uses PostgreSQL as its primary database. The PostgreSQL instance can be configured using the following environment variables:
+- `DB_HOST`: The host of the Postgres database. Default is `"queue_jobs_demo"`.
+- `DB_PORT`: The port of the Postgres database. Default is `5432`.
+- `DB_USER`: The username of the Postgres database. Default is `postgres`.
+- `DB_PASSWORD`: The password of the Postgres database. Default is `admin`.
+- `DB_DATABASE`: The name of the Postgres database. Default is `"queue_jobs_demo"`.
+- `DB_FORWARD_PORT`: The forward port of the Postgres database. Default is `5432`
+  <a name="redis-configuration"></a>
+## Redis Configuration
+- `REDIS_HOST`: The host of the redis. Default is `"localhost"`.
+- `REDIS_PORT`: The port of the redis. Default is `6379`.
+
+## Note
+- If you are running the service locally, the `DATABASE_HOST` should be set to `"localhost"`.
+- When running the service with Docker, the `DATABASE_HOST` should be set to `"queue_jobs_demo"`.
+
+Any change required ask it with the architect.

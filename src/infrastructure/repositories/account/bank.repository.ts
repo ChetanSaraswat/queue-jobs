@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { Account } from "src/domain/bank/bank.entity";
+import { Account } from "src/domain/account/account.entity";
 import { CreateAccount } from "src/features/account/create-account/create-account.interface";
-import { updateBalance } from "src/features/account/update-bank-details/update-bank-details.interface";
+import { updateBalance } from "src/features/account/update-account/update-account.interface";
 import { DataSource,  Repository } from "typeorm";
 
 @Injectable()

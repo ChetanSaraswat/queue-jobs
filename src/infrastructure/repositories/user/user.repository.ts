@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { User } from "src/domain/user/user.entity";
 import { CreateUser } from "src/features/user/create-user/create-user.interface";
 import { DataSource,  Repository } from "typeorm";
-
 @Injectable()
 export class UserRepository extends Repository<User> {
     constructor(
@@ -17,5 +16,4 @@ export class UserRepository extends Repository<User> {
       }
       return await this.save(payload) 
     }
-
 }

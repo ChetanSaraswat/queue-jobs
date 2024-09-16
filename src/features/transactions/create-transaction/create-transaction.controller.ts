@@ -3,7 +3,6 @@ import { Response } from "express";
 import { handleError } from "src/infrastructure/exception/custom-exception";
 import { CreateTransactionCommand } from "./create-transaction.dto";
 import { CreateTransactionHandler } from "./create-transaction.service";
-
 @Controller('/')
 export class CreateTransactionController {
   constructor(

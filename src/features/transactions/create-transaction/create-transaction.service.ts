@@ -2,8 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { CreateTransactionCommand } from "./create-transaction.dto";
 import { InjectQueue } from "@nestjs/bull";
 import { Queue } from "bull";
-import { Transaction } from "src/domain/bank/transaction.entity";
-
 @Injectable()
 export class CreateTransactionHandler {
   constructor(
@@ -17,7 +15,7 @@ export class CreateTransactionHandler {
     try {
        return await this.transactionQueue.add('transaction-log-job', {transactionPayload,user_id});
     } catch (error) {
-        throw error;
+       throw error;
     }
   }
 }

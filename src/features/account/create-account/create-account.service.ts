@@ -1,9 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { BankAccountRepository } from "src/infrastructure/repositories/bank/bank.repository";
-import { Account } from "src/domain/bank/bank.entity";
+import { BankAccountRepository } from "src/infrastructure/repositories/account/bank.repository";
 import { CreateAccount } from "./create-account.interface";
-
+import { Account } from "src/domain/account/account.entity";
 @Injectable()
 export class CreateBankAccountHandler {
   constructor(

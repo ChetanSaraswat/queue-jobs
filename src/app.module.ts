@@ -6,8 +6,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { dataSourceOptions } from 'ormconfig';
 import { AccountModule } from './features/account/account.module';
 import { TransactionModule } from './features/transactions/transaction.module';
-
-
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -17,11 +15,15 @@ import { TransactionModule } from './features/transactions/transaction.module';
         dataSourceOptions(configService),
       inject: [ConfigService],
     }),
-    BullModule.forRoot({
-      redis: {
-        host: 'localhost',
-        port: 6379,
-      },
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        redis: {
+          host: configService.get<string>('REDIS_HOST'),
+          port: configService.get<number>('REDIS_PORT', 6379),
+        },
+      }),
+      inject: [ConfigService],
     }),
     UsersModule,
     AccountModule,

@@ -20,7 +20,7 @@ services:
   #pgAdmin
   pgadmin:
     image: dpage/pgadmin4
-    container_name: squeue_jobs_demos-pgadmin
+    container_name: queue_jobs_demos-pgadmin
     restart: always
     ports:
       - ${PGADMIN_FORWARD_PORT:-8888}:80

@@ -2,11 +2,11 @@ import { Processor, Process, OnQueueCompleted, OnQueueFailed } from '@nestjs/bul
 import { Job } from 'bull';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BankAccountRepository } from 'src/infrastructure/repositories/bank/bank.repository';
-import { TransactionType } from 'src/domain/bank/enum/transaction-type.enum';
+import { BankAccountRepository } from 'src/infrastructure/repositories/account/bank.repository';
 import { TransactionLogRepository } from 'src/infrastructure/repositories/transaction/transaction.repository';
 import { dataSource } from 'ormconfig';
-
+import { TransactionType } from 'src/domain/account/enum/transaction-type.enum';
+import { InsufficientBalanceException } from 'src/infrastructure/exception/custom-exception';
 @Processor('transaction-queue')
 @Injectable()
 export class TransactionProcessor {
@@ -59,7 +59,7 @@ export class TransactionProcessor {
             return  await this.transactionLogRepository.createTransactionLog(creditTransactionlogData,transaction)
         })}
          else{
-            throw new Error('Insufficient balance')
+            throw new InsufficientBalanceException();
          }
   }
   @OnQueueCompleted()

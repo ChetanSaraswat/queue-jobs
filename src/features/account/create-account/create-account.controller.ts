@@ -3,7 +3,6 @@ import { Response } from "express";
 import { handleError } from "src/infrastructure/exception/custom-exception";
 import { CreateBankAccountHandler } from "./create-account.service";
 import { CreateAccountCommand} from "./create-account.dto";
-
 @Controller('/')
 export class CreateBankAccountController {
   constructor(
