@@ -1,0 +1,58 @@
+version: '3.9'
+
+services:
+  # postgres DB service
+  database:
+    image: postgres:16.1-alpine3.18
+    container_name: queue_jobs_demo
+    restart: always
+    ports:
+      - ${DB_FORWARD_PORT:-5432}:5432
+    environment:
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-zenmonk}
+      - POSTGRES_DB=${DB_DATABASE:-queue_jobs_demo}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+
+
+  #pgAdmin
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: squeue_jobs_demos-pgadmin
+    restart: always
+    ports:
+      - ${PGADMIN_FORWARD_PORT:-8888}:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+
+  
+  # Backend service
+  backend:
+    container_name: queue_jobs_demo-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+    ports:
+      - ${APP_FORWARD_PORT:-8080}:${APP_PORT:-8080}
+    volumes:
+      - .:/app
+    restart: on-failure
+    tty: true
+    stdin_open: true
+    expose:
+      - ${APP_PORT:-8080}
+  
+
+volumes:
+  pg_data: {}
+  pgadmin_data: {}
+
+
+#docker network create scholarship-application-requests-shared-network
