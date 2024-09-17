@@ -4,7 +4,7 @@ services:
   # postgres DB service
   database:
     image: postgres:16.1-alpine3.18
-    container_name: queue_jobs_demo
+    container_name: queue_jobs_demo_database
     restart: always
     ports:
       - ${DB_FORWARD_PORT:-5432}:5432
@@ -15,9 +15,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
 
-
-
-  #pgAdmin
+  # pgAdmin
   pgadmin:
     image: dpage/pgadmin4
     container_name: queue_jobs_demos-pgadmin
@@ -30,15 +28,13 @@ services:
     volumes:
       - pgadmin_data:/var/lib/pgadmin
 
-
-  
   # Backend service
   backend:
     container_name: queue_jobs_demo-backend
     build:
       context: .
       dockerfile: Dockerfile
-      target: base
+      target: base # Ensure your Dockerfile has a stage named 'base'
     ports:
       - ${APP_FORWARD_PORT:-8080}:${APP_PORT:-8080}
     volumes:
@@ -48,11 +44,23 @@ services:
     stdin_open: true
     expose:
       - ${APP_PORT:-8080}
-  
+    environment:
+      - REDIS_HOST=redis  # Ensure Redis service name is used
+      - REDIS_PORT=6379
+    depends_on:
+      - redis 
+
+  # Redis service
+  redis:
+    image: redis:latest
+    container_name: redis_container
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
 
 volumes:
-  pg_data: {}
-  pgadmin_data: {}
+   pg_data: {}
+   pgadmin_data: {}
+   redis_data: {}
 
-
-#docker network create scholarship-application-requests-shared-network

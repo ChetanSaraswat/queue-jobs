@@ -4,14 +4,12 @@ This is a demo project for job queues using redis and bullMq.
 
 
 - [Technicals Requirements](#technicals-requirements)
-- [Event Modeling](#event-modeling)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Database Setup](#database-setup)
 - [Database Configuration](#database-configuration)
 - [Services Architecture](#services-architecture)
-- [Event Modeling](#event-modeling)
 
 # Technicals Requirements
 - DB must be relational.

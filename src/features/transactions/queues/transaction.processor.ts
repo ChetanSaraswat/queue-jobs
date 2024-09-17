@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TransactionRepository } from 'src/infrastructure/repositories/account/transaction.repository';
 import { dataSource } from 'ormconfig';
 import { TransactionType } from 'src/domain/account/enum/transaction-type.enum';
-import { InsufficientBalanceException } from 'src/infrastructure/exception/custom-exception';
+import { InsufficientBalanceException, NoAccountDetailsExist } from 'src/infrastructure/exception/custom-exception';
 import { AccountRepository } from 'src/infrastructure/repositories/account/account.repository';
 import { CreateTransaction } from '../create-transaction/create-transaction.interface';
 import { Balance } from 'src/domain/account/account-balance';
@@ -23,8 +23,14 @@ export class TransactionProcessor {
   async handleTaskJob(job: Job) {
         const { amount: amount, user_id: debit_user_id ,receiver_id: credit_user_id ,description} = job.data || {};
         const debit_bank_details = await this.AccountRepository.findByUuid(debit_user_id);
+        if(!debit_bank_details){
+            throw new NoAccountDetailsExist();
+        }
         const balanceValue = debit_bank_details.balance.getValue()
         const credit_bank_details = await this.AccountRepository.findByUuid(credit_user_id);
+        if(!credit_bank_details){
+            throw new NoAccountDetailsExist();
+        }
         if(balanceValue > amount){
             const debitPayload= {
                 balance : Balance.subtract(debit_bank_details?.balance,Number(amount)),
@@ -71,6 +77,6 @@ export class TransactionProcessor {
   }
   @OnQueueFailed()
   async onFailed(job:Job){
-    console.log(`Job ${job.failedReason} failed`);
+    console.log(`Job with id:- ${job.id} failed with reason:- ${job.failedReason}`);
   }
 }

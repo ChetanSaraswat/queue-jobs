@@ -18,6 +18,15 @@ export class InvalidBalanaceFormat extends HttpException {
   }
 }
 
+export class NoAccountDetailsExist extends HttpException {
+  constructor(
+    message: string = 'No account with this user id exist',
+    status: HttpStatus = HttpStatus.BAD_REQUEST
+  ) {
+    super(message, status);
+  }
+}
+
 export function handleError(res: Response, error) {
     return res
       .status(error?.status ?? HttpStatus.INTERNAL_SERVER_ERROR)
