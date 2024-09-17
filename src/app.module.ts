@@ -20,7 +20,7 @@ import { TransactionModule } from './features/transactions/transaction.module';
       useFactory: async (configService: ConfigService) => ({
         redis: {
           host: configService.get<string>('REDIS_HOST'),
-          port: configService.get<number>('REDIS_PORT', 6379),
+          port: configService.get<number>('REDIS_PORT'),
         },
       }),
       inject: [ConfigService],

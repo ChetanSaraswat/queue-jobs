@@ -1,7 +1,7 @@
 import { Body, Controller, HttpStatus, Post, Res } from "@nestjs/common";
 import { Response } from "express";
 import { handleError } from "src/infrastructure/exception/custom-exception";
-import { CreateUserCommand } from "./create-user.validator";
+import { CreateUserCommand } from "./create-user.dto";
 import { CreateUserHandler } from "./create-user.service";
 @Controller('/')
 export class CreateUserController {

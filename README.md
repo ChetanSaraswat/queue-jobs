@@ -1,27 +1,20 @@
 # job-queues-example
 
-This is a microservice that is used to get applicant information for a scholarship application.
+This is a demo project for job queues using redis and bullMq.
+
 
 - [Technicals Requirements](#technicals-requirements)
-- [Entity relationship diagram](#entity-relationship-diagram)
 - [Event Modeling](#event-modeling)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Database Setup](#database-setup)
 - [Database Configuration](#database-configuration)
-- [Mail Configuration](#mail-configuration)
-- [Storage Configuration](#storage-configuration)
-- [Entity Relationship Diagram](#entity-relationship-diagram)
 - [Services Architecture](#services-architecture)
 - [Event Modeling](#event-modeling)
 
 # Technicals Requirements
 - DB must be relational.
-
-# Recommendations
-- Use HAL and HATEOAS 
-
 
 ## Getting Started
 These instructions will help you set up and run the Queue Job Demo Project on your local machine or server.

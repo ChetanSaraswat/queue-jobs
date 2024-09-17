@@ -2,7 +2,7 @@ import { Processor, Process, OnQueueCompleted, OnQueueFailed } from '@nestjs/bul
 import { Job } from 'bull';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TransactionRepository } from 'src/infrastructure/repositories/transaction/transaction.repository';
+import { TransactionRepository } from 'src/infrastructure/repositories/account/transaction.repository';
 import { dataSource } from 'ormconfig';
 import { TransactionType } from 'src/domain/account/enum/transaction-type.enum';
 import { InsufficientBalanceException } from 'src/infrastructure/exception/custom-exception';
@@ -21,18 +21,17 @@ export class TransactionProcessor {
     
   @Process('transaction-job')
   async handleTaskJob(job: Job) {
-        const { transactionPayload: data, user_id: debit_user_id } = job.data || {};
-        const { receiver_id: credit_user_id } = data || {};
+        const { amount: amount, user_id: debit_user_id ,receiver_id: credit_user_id ,description} = job.data || {};
         const debit_bank_details = await this.AccountRepository.findByUuid(debit_user_id);
         const balanceValue = debit_bank_details.balance.getValue()
         const credit_bank_details = await this.AccountRepository.findByUuid(credit_user_id);
-        if(balanceValue > data?.amount){
+        if(balanceValue > amount){
             const debitPayload= {
-                balance : Balance.subtract(debit_bank_details?.balance,Number(data?.amount)),
+                balance : Balance.subtract(debit_bank_details?.balance,Number(amount)),
                 user_id : debit_user_id
             }
             const creditPayload= {
-                balance : Balance.add(credit_bank_details?.balance,Number(data?.amount)), 
+                balance : Balance.add(credit_bank_details?.balance,Number(amount)), 
                 user_id : credit_user_id
             }
             return await dataSource.transaction(async transaction => {
@@ -40,7 +39,8 @@ export class TransactionProcessor {
             await this.AccountRepository.updateAccountBalance(creditPayload,transaction)
             const debitTransactionData:CreateTransaction={
                 transaction_type : TransactionType.DEBIT,
-                amount : data?.amount,
+                amount : amount,
+                description:description,
                 credited_user_id : credit_user_id,
                 debited_user_id : debit_user_id,
                 balance_after_transaction:debitPayload?.balance.getValue(),
@@ -51,7 +51,8 @@ export class TransactionProcessor {
             
             const creditTransactionData:CreateTransaction={
                 transaction_type : TransactionType.CREDIT,
-                amount : data?.amount,
+                amount : amount,
+                description:description,
                 credited_user_id : credit_user_id,
                 debited_user_id : debit_user_id,
                 balance_after_transaction:creditPayload?.balance.getValue(),

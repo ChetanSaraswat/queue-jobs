@@ -1,4 +1,4 @@
-import { InsufficientBalanceException } from "src/infrastructure/exception/custom-exception";
+import { InsufficientBalanceException, InvalidBalanaceFormat } from "src/infrastructure/exception/custom-exception";
 
 export class Balance {
     private readonly amount: number;
@@ -16,7 +16,7 @@ export class Balance {
       const roundedAmount = parseFloat(validAmount?.toFixed(2));
   
       if (roundedAmount.toString().length > 12) {
-        throw new Error('Balance exceeds the allowed precision of 12 digits');
+        throw new InvalidBalanaceFormat();
       }
       return roundedAmount;
     }

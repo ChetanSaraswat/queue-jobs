@@ -13,7 +13,7 @@ export class CreateTransactionHandler {
     user_id:string
   ) {
     try {
-       return await this.transactionQueue.add('transaction-job', {transactionPayload,user_id});
+       return await this.transactionQueue.add('transaction-job', {...transactionPayload,user_id},{delay:5000, attempts:2});
     } catch (error) {
       console.log('error: ', error);
        throw error;

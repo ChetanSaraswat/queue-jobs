@@ -9,6 +9,15 @@ export class InsufficientBalanceException extends HttpException {
   }
 }
 
+export class InvalidBalanaceFormat extends HttpException {
+  constructor(
+    message: string = 'Balance exceeds the allowed precision of 12 digits',
+    status: HttpStatus = HttpStatus.BAD_REQUEST
+  ) {
+    super(message, status);
+  }
+}
+
 export function handleError(res: Response, error) {
     return res
       .status(error?.status ?? HttpStatus.INTERNAL_SERVER_ERROR)
