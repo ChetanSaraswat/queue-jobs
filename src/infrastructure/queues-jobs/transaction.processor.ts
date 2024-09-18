@@ -7,8 +7,9 @@ import { dataSource } from 'ormconfig';
 import { TransactionType } from 'src/domain/account/enum/transaction-type.enum';
 import { InsufficientBalanceException, NoAccountDetailsExist } from 'src/infrastructure/exception/custom-exception';
 import { AccountRepository } from 'src/infrastructure/repositories/account/account.repository';
-import { CreateTransaction } from '../create-transaction/create-transaction.interface';
 import { Balance } from 'src/domain/account/account-balance';
+import { CreateTransaction } from 'src/features/transactions/create-transaction/create-transaction.interface';
+
 @Processor('transaction-queue')
 @Injectable()
 export class TransactionProcessor {

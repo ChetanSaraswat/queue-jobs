@@ -5,7 +5,8 @@ import { Queue } from "bull";
 @Injectable()
 export class CreateTransactionHandler {
   constructor(
-    @InjectQueue('transaction-queue') private transactionQueue: Queue
+    @InjectQueue('transaction-queue') 
+    private transactionQueue: Queue
   ) {}
 
   public async handle(
@@ -13,7 +14,10 @@ export class CreateTransactionHandler {
     user_id:string
   ) {
     try {
-       return  this.transactionQueue.add('transaction-job', {...transactionPayload,user_id},{delay:5000, attempts:2});
+       return  this.transactionQueue.add('transaction-job', 
+        {...transactionPayload,user_id},
+        {delay:5000, attempts:2}
+       );
     } catch (error) {
       console.log('error: ', error);
        throw error;

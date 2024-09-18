@@ -16,7 +16,7 @@ export class CreateTransactionController {
     @Res() res: Response,
   ) {
     try {
-      const response =await this.createTransactionHandler.handle(body , user_id)
+      const response =await this.createTransactionHandler.handle(body, user_id)
       return res.status(HttpStatus.OK).json(response);
     } catch (error) {
       console.log('Error during adding transaction details', error);
